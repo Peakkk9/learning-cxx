@@ -9,16 +9,17 @@
 // 因此必须提供构造器来初始化字段。
 // READ: 构造器 <https://zh.cppreference.com/w/cpp/language/constructor>
 class Fibonacci {
-    size_t cache[16];
+    size_t cache[16]; //固定大小的数组，平凡析构掉就可以了，不需要写析构函数
     int cached;
 
 public:
     // TODO: 实现构造器
-    // Fibonacci()
+    Fibonacci():cache{0,1},cached(2){
+    }
 
     // TODO: 实现正确的缓存优化斐波那契计算
     size_t get(int i) {
-        for (; false; ++cached) {
+        for (; cached<=i && cached<16; ++cached) {
             cache[cached] = cache[cached - 1] + cache[cached - 2];
         }
         return cache[i];

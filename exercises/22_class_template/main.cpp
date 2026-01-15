@@ -1,15 +1,31 @@
 ﻿#include "../exercise.h"
 #include <cstring>
 // READ: 类模板 <https://zh.cppreference.com/w/cpp/language/class_template>
+/**
+ * =================================================================
+ * 类模板 (Class Template) 核心要点
+ * =================================================================
+ * 1. 作用：实现代码复用，定义与具体类型无关的通用结构（如容器）。
+ * 2. 实例化：类模板本身不是类型，<class名><int> 才是真正的类型。
+ * 3. 内存：每种类型的实例化都会生成一份独立的类定义代码。
+ * 4. 非类型参数：可以在模板中传入常量（如数组长度），在编译期确定。
+ * 5. 头文件：由于编译器需要看到完整定义来生成代码，类模板通常全放在 .h 文件中。
+ * =================================================================
+ */
 
 template<class T>
 struct Tensor4D {
     unsigned int shape[4];
     T *data;
 
+    //Constructor
     Tensor4D(unsigned int const shape_[4], T const *data_) {
         unsigned int size = 1;
         // TODO: 填入正确的 shape 并计算 size
+        for(int i=0;i<4;++i){
+            shape[i]=shape_[i];
+            size *= shape[i];
+        }
         data = new T[size];
         std::memcpy(data, data_, size * sizeof(T));
     }
@@ -27,7 +43,31 @@ struct Tensor4D {
     // 例如，`this` 形状为 `[1, 2, 3, 4]`，`others` 形状为 `[1, 2, 1, 4]`，
     // 则 `this` 与 `others` 相加时，3 个形状为 `[1, 2, 1, 4]` 的子张量各自与 `others` 对应项相加。
     Tensor4D &operator+=(Tensor4D const &others) {
-        // TODO: 实现单向广播的加法
+        unsigned int s0,s1,s2,s3;
+        s0 = ((others.shape[0]!=shape[0])&&(others.shape[0]==1))? 0: (others.shape[1]*others.shape[2]*others.shape[3]);
+        s1 = ((others.shape[1]!=shape[1])&&(others.shape[1]==1))? 0: (others.shape[2]*others.shape[3]);
+        s2 = ((others.shape[2]!=shape[2])&&(others.shape[2]==1))? 0: (others.shape[3]);
+        s3 = ((others.shape[3]!=shape[3])&&(others.shape[3]==1))? 0: 1;
+
+        unsigned int off0,off1,off2,off3;
+        unsigned int this_idx=0;
+
+        for(unsigned int i=0; i<shape[0] ; ++i){
+            off0 = i * s0 ;
+            for(unsigned int j=0;j<shape[1];++j){
+                off1 = off0 + j * s1;
+                for(unsigned int k=0;k<shape[2];++k){
+                    off2 = off1 + k * s2;
+                    for(unsigned int l=0;l<shape[3];++l){
+                        off3 = off2 + l * s3 ;
+
+                        data[this_idx] += others.data[off3];
+
+                        ++this_idx;
+                    }
+                }
+            }
+        }
         return *this;
     }
 };

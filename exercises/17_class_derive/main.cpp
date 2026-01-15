@@ -1,6 +1,10 @@
 #include "../exercise.h"
 
 // READ: 派生类 <https://zh.cppreference.com/w/cpp/language/derived_class>
+// 派生类构造顺序：
+// 首先调用基类的构造函数（从根部开始）。
+// 然后调用派生类成员变量的构造函数。
+// 最后执行派生类自己的构造函数体。
 
 static int i = 0;
 
@@ -30,8 +34,8 @@ struct A {
         std::cout << ++i << ". " << "~A(" << a << ')' << std::endl;
     }
 };
-struct B : public A {
-    X x;
+struct B : public A { //int a : sizeof(int)
+    X x; //sizeof(X) : sizeof(int)
 
     B(int b) : A(1), x(b) {
         std::cout << ++i << ". " << "B(" << a << ", X(" << x.x << "))" << std::endl;
@@ -50,9 +54,9 @@ int main(int argc, char **argv) {
     B b = B(3);
 
     // TODO: 补全三个类型的大小
-    static_assert(sizeof(X) == ?, "There is an int in X");
-    static_assert(sizeof(A) == ?, "There is an int in A");
-    static_assert(sizeof(B) == ?, "B is an A with an X");
+    static_assert(sizeof(X) == sizeof(int), "There is an int in X");
+    static_assert(sizeof(A) == sizeof(int), "There is an int in A");
+    static_assert(sizeof(B) == 2*sizeof(int), "B is an A with an X");
 
     i = 0;
     std::cout << std::endl

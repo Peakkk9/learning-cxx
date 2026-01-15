@@ -5,7 +5,9 @@
 struct Fibonacci {
     int numbers[11];
     // TODO: 修改方法签名和实现，使测试通过
-    int get(int i) {
+    //将get成员函数修改为const类型，告诉编译器这个成员函数不会修改成员变量（只读承诺）
+    int get(int i) const{
+        return numbers[i];
     }
 };
 

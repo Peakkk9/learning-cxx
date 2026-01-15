@@ -31,12 +31,13 @@ ColorEnum convert_by_pun(Color c) {
     // 这是比较少见的 C++ 不与 C 保持兼容的特性。
     // READ: 类型双关 <https://tttapa.github.io/Pages/Programming/Cpp/Practices/type-punning.html>
     union TypePun {
-        ColorEnum e;
-        Color c;
+        ColorEnum e; //1字节
+        Color c; //4字节
     };
 
     TypePun pun;
     // TODO: 补全类型双关转换
+    pun.c = c;
 
     return pun.e;
 }

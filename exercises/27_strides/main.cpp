@@ -18,6 +18,26 @@ std::vector<udim> strides(std::vector<udim> const &shape) {
     // TODO: 完成函数体，根据张量形状计算张量连续存储时的步长。
     // READ: 逆向迭代器 std::vector::rbegin <https://zh.cppreference.com/w/cpp/container/vector/rbegin>
     //       使用逆向迭代器可能可以简化代码
+    /**
+     * 【C++ 逆向迭代器 (Reverse Iterator)】
+     * 1. 语义：
+     * - v.rbegin() -> 指向最后一个元素 (相当于 v.end() - 1)。
+     * - v.rend()   -> 指向第一个元素之前 (相当于 v.begin() - 1)。
+     * 2. 行为：
+     * - ++it：在物理内存中“向左”移动。
+     * - --it：在物理内存中“向右”移动。
+     * 3. 底层逻辑：
+     * - 逆向迭代器是对正向迭代器的包装。
+     * - 解引用时 (*it)：返回的是物理位置“左侧”的元素。即 &*rit == &*(it.base() - 1)。
+     * 4. 转换：可以使用 rit.base() 将逆向迭代器转回正向迭代器（注意位置会错开一位）。
+     */
+    udim stride = 1;
+    auto sit = shape.rbegin();
+    auto dit = strides.rbegin();
+    for(;sit != shape.rend();++sit,++dit){
+        *dit = stride;
+        stride *= *sit;
+    }
     return strides;
 }
 

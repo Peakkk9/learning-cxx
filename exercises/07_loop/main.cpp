@@ -2,12 +2,14 @@
 
 // TODO: 改正函数实现，实现正确的缓存优化斐波那契计算
 // THINk: 这个函数是一个纯函数（pure function）吗？
+// 1.确定性：相同的输入，永远得到相同的输出。 函数的结果只取决于传入的参数，不依赖于任何外部变量
+// 2.无副作用：函数执行过程中不会对外部环境产生任何影响。不会修改全局变量、不会修改传入的引用/指针参数、不会进行输入输出。
 // READ: 纯函数 <https://zh.wikipedia.org/wiki/%E7%BA%AF%E5%87%BD%E6%95%B0>
 static unsigned long long fibonacci(int i) {
     // TODO: 为缓存设置正确的初始值
-    static unsigned long long cache[96], cached;
+    static unsigned long long cache[96]={0,1}, cached=2;
     // TODO: 设置正确的循环条件
-    for (; false; ++cached) {
+    for (; cached < 96; ++cached) {
         cache[cached] = cache[cached - 1] + cache[cached - 2];
     }
     return cache[i];
